@@ -1,3 +1,7 @@
+.idea/
+documentation.synctex.gz
+auxil/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

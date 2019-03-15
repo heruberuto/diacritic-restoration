@@ -1,0 +1,48 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{titling}
+\usepackage{url}
+
+\setlength{\droptitle}{-5em}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\sub}[1] {\noindent{\textbf{{#1)}}}}
+\setcounter{section}{0}
+
+\begin{document}
+    \title{CoLi -- Final Project -- Diacritics~Restoration}
+    \author{Herbert~Ullrich~(\textbf{2576412})}
+    \maketitle
+    \section{Introduction}
+    \subsection{Project files}
+    \begin{itemize}
+        \item \textbf{movies-pp.txt} - the test data, as unzipped from \textsf{Piazza}
+        \item \textbf{movies-50.txt} - first 50 sentences of the test data, included with submission, used for debugging
+        \item \textbf{lda.py} - a runnable python module to execute LDA over the given test data
+        \item \textbf{topics.txt} - text output of a single run of \textbf{lda.py} describing the 20 modelled topics
+    \end{itemize}
+    \section{Implementation}
+    As for time reasons, implementation of the LDA itself was skipped.
+    Instead, we are at least including a short script \textbf{lda.py} which solves
+    the given challenge using the \textsf{Python} package \textsf{gensim} by Radim {\v R}eh{\r u}{\v r}ek~\cite{rehurek_lrec}
+
+    \section{Results}
+    We observe that the most of our model topics include dominant words like \textit{film}, \textit{movie}, \textit{like},\ldots
+    Let us therefore try to omit the words and topics we consider uninteresting. Full output of a run of our program over the full testing set can be found in the file \textbf{topics.txt}.
+
+    \section{Conclusions}
+    The topics modelled by our LDA model sometimes indeed represent thematically coherent semantic fields: different movies, as shown in topics 4, 6, 9 or e.g.\ a movie series, topic 2.
+
+    The main limit was in our case the fixed context of movies -- words like \textit{movie}, \textit{film},\ldots made a lot of appearances across the topics
+    and were misguiding the algorithm trying to distinguish smaller thematic nuances.
+
+    \subsection{Improvements}
+    In our opinion, (even a very dummy) lemmatization of the corpus before its evaluation with LDA would improve the accuracy dramatically.
+    Melting down the semantically equivalent words (e.g.\ the synonyms or inflected forms) to some computer-distinguishable
+    unique representative would make the semantically important words occur more frequently (and would reduce bias by changing the speaker while preserving the topic).
+    \bibliography{references}
+    \bibliographystyle{plain}
+\end{document}

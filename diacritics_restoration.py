@@ -1,5 +1,4 @@
 __author__ = 'ssbushi'
-
 # Import the toolkit and tags
 import nltk
 from nltk.corpus import treebank

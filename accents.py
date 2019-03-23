@@ -2,11 +2,20 @@ def decompose(character):
     return CHARACTER_DECOMPOSITIONS.get(character, (character, NO_ACCENT))
 
 
-def compose(character, accent):
-    global CHARACTER_COMPOSITIONS
-    if CHARACTER_COMPOSITIONS is None:
-        CHARACTER_COMPOSITIONS = {val: key for key, val in CHARACTER_DECOMPOSITIONS.items()}
-    return CHARACTER_COMPOSITIONS.get((character, accent), character)
+def compose(character, accent=None):
+    if isinstance(character, list):
+        return "".join([compose(char, accent) for char, accent in character])
+    global character_compositions
+    if character_compositions is None:
+        character_compositions = {val: key for key, val in CHARACTER_DECOMPOSITIONS.items()}
+    return character_compositions.get((character, accent), character)
+
+
+def strip(string):
+    global stripping_table
+    if stripping_table is None:
+        stripping_table = str.maketrans({key: val[0] for key, val in CHARACTER_DECOMPOSITIONS.items()})
+    return string.translate(stripping_table)
 
 
 NO_ACCENT = ' '  # A printable character is used (instead of None) to make the (de)serialization easy
@@ -29,12 +38,13 @@ DOUBLE_ACUTE = '˝'
 DOUBLE_GRAVE = '̏'
 COMMA = ','
 
-SUPPORTED = [ACUTE, GRAVE, CIRCUMFLEX, BREVE, CEDILLA, UMLAUT, DOUBLE_GRAVE,
-             TILDE, RING, UNDER_RING, STROKE, OGONEK, MACRON, DOUBLE_GRAVE, DOUBLE_ACUTE, COMMA]
+SUPPORTED = (NO_ACCENT, ACUTE, GRAVE, CIRCUMFLEX, BREVE, CEDILLA, UMLAUT, DOUBLE_GRAVE,
+             TILDE, RING, STROKE, OGONEK, MACRON, DOUBLE_GRAVE, DOUBLE_ACUTE, COMMA)
 
-CHARACTER_COMPOSITIONS = None
+stripping_table = None
+character_compositions = None
 CHARACTER_DECOMPOSITIONS = {
-    # The character decomposition was written ad hoc and only tested on czech and french
+    # The character decompositions were written ad hoc and only tested on czech and french
     'À': ('A', GRAVE),
     'Á': ('A', ACUTE),
     'Â': ('A', CIRCUMFLEX),

@@ -26,18 +26,46 @@ class HmmNgramRestorer(DiacriticRestorer):
         self.tagger = None
         self.n = n
 
-    def test(self, file):
+    def test(self, file, limit=None):
         buffer = CorpusNGramBuffer(file, self.n, 1000)
-        correct = incorrect = 0
+        right = wrong = words_right = words_wrong = diawords_right = diawords_wrong = 0
+        word_right = True
+        word_has_diacritics = False
+        s = 0
+
         for sequence in buffer:
+            if limit is not None and s >= limit: break
+            else: s += 1
             tagged_sequence = self.tagger.tag([obs for obs, tag in sequence])
             for i in range(len(sequence)):
+                if sequence[i][0][-1] == " " or i == len(sequence) - 1:
+                    if word_right:
+                        words_right += 1
+                        if word_has_diacritics: diawords_right += 1
+                    else:
+                        words_wrong += 1
+                        if word_has_diacritics: diawords_wrong += 1
+                    word_right = True
+                    word_has_diacritics = False
+                elif sequence[i][1] != accents.NO_ACCENT:
+                    word_has_diacritics = True
                 if sequence[i][1] == tagged_sequence[i][1]:
-                    correct += 1
+                    right += 1
                 else:
-                    incorrect += 1
+                    wrong += 1
+                    word_right = False
         buffer.close()
-        return correct / (correct + incorrect)
+        return {
+            "accuracy": right / (right + wrong),
+            "correct": right,
+            "incorrect": wrong,
+            "word_accuracy": words_right / (words_right + words_wrong),
+            "words_correct": words_right,
+            "words_incorrect": words_wrong,
+            "diaword_accuracy": diawords_right / (diawords_right + diawords_wrong),
+            "diawords_correct": diawords_right,
+            "diawords_incorrect": diawords_wrong
+        }
 
     def train(self, file):
         buffer = CorpusNGramBuffer(file, self.n)

@@ -40,7 +40,7 @@ COMMA = ','
 
 SUPPORTED = (NO_ACCENT, ACUTE, GRAVE, CIRCUMFLEX, BREVE, CEDILLA, UMLAUT, DOUBLE_GRAVE,
              TILDE, RING, STROKE, OGONEK, MACRON, DOUBLE_GRAVE, DOUBLE_ACUTE, COMMA)
-
+ASCII_CHARACTERS = tuple([chr(i) for i in range(32, 127)])
 stripping_table = None
 character_compositions = None
 CHARACTER_DECOMPOSITIONS = {

@@ -1,0 +1,1 @@
+{"states": ["healthy", "sick"], "symbols": ["well", "weak", "dying"], "initial_p": {"healthy": 0.6, "sick": 0.4}, "transition_p": {"healthy": {"healthy": 0.7, "sick": 0.3}, "sick": {"healthy": 0.4, "sick": 0.6}}, "emission_p": {"healthy": {"well": 0.5, "weak": 0.4, "dying": 0.1}, "sick": {"well": 0.1, "weak": 0.3, "dying": 0.6}}}

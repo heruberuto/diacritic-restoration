@@ -1,6 +1,7 @@
 .idea/
 documentation.synctex.gz
 auxil/
+*.pickle
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

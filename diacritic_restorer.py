@@ -11,26 +11,11 @@ import accents
 
 
 class DiacriticRestorer:
-    def train(self, accented_text):
+    def train(self, file):
         return self
 
-    def train_from_file(self, filename):
-        return self.train(open(filename, 'r', encoding='utf8').readlines())
-
-    def test_from_file(self, filename):
-        return self.test(open(filename, 'r', encoding='utf8').readlines())
-
-    def test(self, accented_sentences):
-        sq("io2 done: ")
-        correct = incorrect = 0
-        for sentence in accented_sentences:
-            result = self.restore_accents(accents.strip(sentence))
-            for i in range(len(sentence)):
-                if sentence[i] == result[i]:
-                    correct += 1
-                else:
-                    incorrect += 1
-        return correct / (correct + incorrect)
+    def test(self, file):
+        return 0
 
     def restore_accents(self, sentence):
         return
@@ -41,20 +26,23 @@ class HmmNgramRestorer(DiacriticRestorer):
         self.tagger = None
         self.n = n
 
-    def train(self, accented_sentences):
-        training_data = []
-        for sentence in accented_sentences:
-            characters = [accents.decompose(character) for character in sentence]
-            buffer = []
-            training_sentence = []
-            for character in characters:
-                buffer.append(character[0])
-                training_sentence.append(("".join(buffer), character[1]))
-                if len(buffer) == self.n:
-                    buffer.pop(0)
-            training_data.append(training_sentence)
-        sq("io1 done: ")
-        self.tagger = hmm.HiddenMarkovModelTrainer().train_supervised(training_data)
+    def test(self, file):
+        buffer = CorpusNGramBuffer(file, self.n, 1000)
+        correct = incorrect = 0
+        for sequence in buffer:
+            tagged_sequence = self.tagger.tag([obs for obs, tag in sequence])
+            for i in range(len(sequence)):
+                if sequence[i][1] == tagged_sequence[i][1]:
+                    correct += 1
+                else:
+                    incorrect += 1
+        buffer.close()
+        return correct / (correct + incorrect)
+
+    def train(self, file):
+        buffer = CorpusNGramBuffer(file, self.n)
+        self.tagger = hmm.HiddenMarkovModelTrainer().train_supervised(buffer)
+        buffer.close()
         sq("training done: ")
         return self
 
@@ -96,7 +84,36 @@ class HmmNgramRestorer(DiacriticRestorer):
         return hmm
 
 
-start = time.time()
+class CorpusNGramBuffer:
+    def __init__(self, filename, n, notify_after=10000):
+        self.filename = filename
+        self.file = open(filename, "r", encoding="utf8")
+        self.n = n
+        self.i = 0
+        self.notify_after = notify_after
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        line = self.file.readline()
+        if line == "":
+            raise StopIteration
+        line = line.rstrip()
+        if self.i % self.notify_after == 0:
+            print("BUFFERED line #{} of {} - \"{}\"".format(self.i, self.filename, line))
+        self.i += 1
+        buffer = []
+        tagged_sequence = []
+        for character in [accents.decompose(char) for char in line]:
+            buffer.append(character[0])
+            tagged_sequence.append(("".join(buffer), character[1]))
+            if len(buffer) == self.n:
+                buffer.pop(0)
+        return tagged_sequence
+
+    def close(self):
+        self.file.close()
 
 
 def sq(comment):
@@ -105,11 +122,4 @@ def sq(comment):
     start = time.time()
 
 
-
-restorer = HmmNgramRestorer.load("ga.pickle")
-restorer.restore_accents("is eard ata sa bhiobla focal de , de reir mar a mheasann na criostaithe agus na giudaigh .\n")
-"""restorer2 = HmmNgramRestorer(4).train_from_file("corpora/ga/target_train.txt")
-restorer2.save("ga.pickle")
-print(restorer2.test_from_file("corpora/ga/target_test.txt"))
-sq("finished: ")
-"""
+start = time.time()

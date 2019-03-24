@@ -1,3 +1,6 @@
+from collections import Iterable
+
+
 def decompose(character):
     return CHARACTER_DECOMPOSITIONS.get(character, (character, NO_ACCENT))
 

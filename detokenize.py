@@ -15,12 +15,8 @@ def stripped_file_name(file):
 
 FILES_DEFAULT = ["/".join(triple) for triple in itertools.product(
     ["corpora"],
-    ["ga",
-     "cs", "es", "fr", "hr", "hu", "lv", "pl", "ro", "sk"
-     ],
-    ["target_test.stripped.txt",
-    #"target_train.txt"
-    ]
+    ["ga", "cs", "es", "fr", "hr", "hu", "lv", "pl", "ro", "sk"],
+    ["target_test.txt", "target_train.txt"]
 )]  # lists file names "corpora/{ga,cs,es,...}/{target_test,target_train}.txt"
 
 files = sys.argv[1:] if len(sys.argv) > 1 else FILES_DEFAULT
@@ -29,7 +25,7 @@ detokenizer = TreebankWordDetokenizer()
 
 for file in files:
     with open(file, 'r', encoding="utf8") as infile:
-        print("Stripping file " + file)
+        print("Detokenizing file " + file)
         with open(stripped_file_name(file), 'w', encoding="utf8") as outfile:
             for line in infile:
                 line = detokenizer.detokenize(line.split())

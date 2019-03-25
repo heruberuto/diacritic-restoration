@@ -1,0 +1,14 @@
+{
+  "accuracy": 0.9788781566391249,
+  "correct": 100938,
+  "incorrect": 2178,
+  "word_accuracy": 0.8708990733784122,
+  "words_correct": 13910,
+  "words_incorrect": 2062,
+  "diaword_accuracy": 0.0,
+  "diawords_correct": 0,
+  "diawords_incorrect": 2062,
+  "alphaword_accuracy": 0.8617499161917532,
+  "alphawords_correct": 12853,
+  "alphawords_incorrect": 2062
+}

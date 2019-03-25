@@ -1,11 +1,36 @@
-from collections import Iterable
+# -*- coding: utf-8 -*-
+"""accents.py
+
+This module sets the basic constants and functions for proccessing diacritics, their separation and composition
+with the characters. Handles transitions (char<=>tuple): diacritical character <=> (character, diac. mark)"""
 
 
 def decompose(character):
+    """
+    Decomposes a single diacritical character to its non-diacritical version and the
+    removed diacritical mark.
+
+    :param character: the diacritical character to be stripped
+    :type: chr
+    :return: a couple: Character without diacritics, Diacritical mark
+    :rtype: tuple
+    """
     return CHARACTER_DECOMPOSITIONS.get(character, (character, NO_ACCENT))
 
 
 def compose(character, accent=None):
+    """
+    Takes a couple of non-diacritical character and a diacritical mark
+    (or a list of such a couples) and returns the matching single diacritical
+    character (or a string).
+    Lazy-loads the character_compositions global that makes this problem easy.
+
+    :param character: the character to be composed with accent | list of chr,accent couples
+    :type: chr|list
+    :param accent: diacritical mark to be added to the character
+    :return: the character with the desired diacritical mark | list of such
+    :rtype: chr|str
+    """
     if isinstance(character, list):
         return "".join([compose(char, accent) for char, accent in character])
     global character_compositions
@@ -15,12 +40,32 @@ def compose(character, accent=None):
 
 
 def strip(string):
+    """
+    Strips given string of diacritics.
+    :param string: string to be stripped of diacritical marks
+    :type: str
+    :return: the input string stripped of diacritical marks
+    :rtype: str
+    """
     global stripping_table
     if stripping_table is None:
         stripping_table = str.maketrans({key: val[0] for key, val in CHARACTER_DECOMPOSITIONS.items()})
     return string.translate(stripping_table)
 
 
+def is_alphabetic(character):
+    """
+    Decides whether the character should be considered alphabetics (primarily for the use of alpha-word
+    accuracy) i. e. whether the character is a upper- or lowercase letter of latin alphabet (other alphabets
+    neglected)
+    :param character:
+    :type: chr
+    :return: true iff the character is alphabetic
+    """
+    return ord('a') <= ord(character) <= ord('z') or ord('A') <= ord(character) <= ord('Z')
+
+
+#  Diacritical mark constants:
 NO_ACCENT = ' '  # A printable character is used (instead of None) to make the (de)serialization easy
 ACUTE = '´'
 GRAVE = '`'
@@ -43,11 +88,11 @@ COMMA = ','
 
 SUPPORTED = (NO_ACCENT, ACUTE, GRAVE, CIRCUMFLEX, BREVE, CEDILLA, UMLAUT, DOUBLE_GRAVE,
              TILDE, RING, STROKE, OGONEK, MACRON, DOUBLE_GRAVE, DOUBLE_ACUTE, COMMA)
-ASCII_CHARACTERS = tuple([chr(i) for i in range(32, 127)])
 stripping_table = None
 character_compositions = None
 CHARACTER_DECOMPOSITIONS = {
-    # The character decompositions were written ad hoc and only tested on czech and french
+    # Only tested on the 10 languages subject to the semester project.
+    # If You find any decomposition missing, please make a pull-request.
     'À': ('A', GRAVE),
     'Á': ('A', ACUTE),
     'Â': ('A', CIRCUMFLEX),

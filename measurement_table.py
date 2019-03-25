@@ -13,20 +13,6 @@ measurements = {  # Measured using evaluate.py on pretrained HMM model of {1,..,
         4: {"accuracy": 0.9886744591422576, "correct": 3560804, "incorrect": 40790, "word_accuracy": 0.9287077931852309,
             "words_correct": 505921, "words_incorrect": 38837, "diaword_accuracy": 0.618374422680808,
             "diawords_correct": 48334, "diawords_incorrect": 29829}},
-    "Irish": {
-        "training_sentences": 50825,
-        1: {"accuracy": 0.9432538239685964, "correct": 801612, "incorrect": 48225, "word_accuracy": 0.7081925991369058,
-            "words_correct": 104207, "words_incorrect": 42938, "diaword_accuracy": 0.0, "diawords_correct": 0,
-            "diawords_incorrect": 42934},
-        2: {"accuracy": 0.9479806127527984, "correct": 805629, "incorrect": 44208, "word_accuracy": 0.7360494750076455,
-            "words_correct": 108306, "words_incorrect": 38839, "diaword_accuracy": 0.2138631387711371,
-            "diawords_correct": 9182, "diawords_incorrect": 33752},
-        3: {"accuracy": 0.9573012236464169, "correct": 813550, "incorrect": 36287, "word_accuracy": 0.7819973495531618,
-            "words_correct": 115067, "words_incorrect": 32078, "diaword_accuracy": 0.4066707038710579,
-            "diawords_correct": 17460, "diawords_incorrect": 25474},
-        4: {"accuracy": 0.9615667475056981, "correct": 817175, "incorrect": 32662, "word_accuracy": 0.8020795813653199,
-            "words_correct": 118022, "words_incorrect": 29123, "diaword_accuracy": 0.44472911911305724,
-            "diawords_correct": 19094, "diawords_incorrect": 23840}},
     "Czech": {
         "training_sentences": 952909,
         1: {"accuracy": 0.8920746971481639, "correct": 3089252, "incorrect": 373745,
@@ -55,6 +41,20 @@ measurements = {  # Measured using evaluate.py on pretrained HMM model of {1,..,
         4: {"accuracy": 0.9506714426410533, "correct": 3057983, "incorrect": 158673, "word_accuracy": 0.72655915393792,
             "words_correct": 347761, "words_incorrect": 130880, "diaword_accuracy": 0.4201246552170799,
             "diawords_correct": 82707, "diawords_incorrect": 114156}},
+    "Irish": {
+        "training_sentences": 50825,
+        1: {"accuracy": 0.9432538239685964, "correct": 801612, "incorrect": 48225, "word_accuracy": 0.7081925991369058,
+            "words_correct": 104207, "words_incorrect": 42938, "diaword_accuracy": 0.0, "diawords_correct": 0,
+            "diawords_incorrect": 42934},
+        2: {"accuracy": 0.9479806127527984, "correct": 805629, "incorrect": 44208, "word_accuracy": 0.7360494750076455,
+            "words_correct": 108306, "words_incorrect": 38839, "diaword_accuracy": 0.2138631387711371,
+            "diawords_correct": 9182, "diawords_incorrect": 33752},
+        3: {"accuracy": 0.9573012236464169, "correct": 813550, "incorrect": 36287, "word_accuracy": 0.7819973495531618,
+            "words_correct": 115067, "words_incorrect": 32078, "diaword_accuracy": 0.4066707038710579,
+            "diawords_correct": 17460, "diawords_incorrect": 25474},
+        4: {"accuracy": 0.9615667475056981, "correct": 817175, "incorrect": 32662, "word_accuracy": 0.8020795813653199,
+            "words_correct": 118022, "words_incorrect": 29123, "diaword_accuracy": 0.44472911911305724,
+            "diawords_correct": 19094, "diawords_incorrect": 23840}},
     "French": {
         "training_sentences": 1818618,
         1: {"accuracy": 0.9700007188776134, "correct": 4304352, "incorrect": 133121,
@@ -140,3 +140,25 @@ measurements = {  # Measured using evaluate.py on pretrained HMM model of {1,..,
             "word_accuracy": 0.7970681194116132, "words_correct": 507404, "words_incorrect": 129184,
             "diaword_accuracy": 0.43131209127591486, "diawords_correct": 77496, "diawords_incorrect": 102179}},
 }
+lines = []
+line = []
+max = {"accuracy": (0, 0), "word_accuracy": (0, 0), "diaword_accuracy": (0, 0)}
+for language, measurement in measurements.items():
+    #  Print LaTeX formatted table
+    line.append("\hline\n\\textbf{" + language + "}")
+    line.append("{:,}".format((measurement["training_sentences"])))
+    dia_percent = '{:.1%}'.format((measurement[1]["diawords_correct"] + measurement[1]["diawords_incorrect"]) / (
+            measurement[1]["words_correct"] + measurement[1]["words_incorrect"]))
+    line.append(dia_percent.replace("%", "\\%"))
+    for i in range(1, 5):
+        if not line:
+            line += [" ", " ", " "]
+        line.append(str(i))
+        for accuracy in ["accuracy", "word_accuracy", "diaword_accuracy"]:
+            line.append('{0:.3g}'.format(measurement[i][accuracy]))
+            if i == 4:
+                line[-1] = "\\textbf{" + line[-1] + "}"
+        lines.append(line)
+        line = []
+
+print("\\\\ \\cline{4-7}\n".join([" & ".join(row) for row in lines] + ['\hline']))

@@ -4,6 +4,8 @@
 \usepackage{titling}
 \usepackage{url}
 \usepackage{dirtree}
+\usepackage{hhline}
+\usepackage{multirow}
 \setlength{\droptitle}{-5em}
 
 \newcommand{\N}{\mathbb{N}}
@@ -49,6 +51,68 @@
     .6 tex.
     .3 share.
     }
+
+    \begin{table}[measurements]
+        \begin{tabular}{|l|l|l||l|l|l|l|}
+            \hline
+            \textbf{language} & \textbf{train. sentences} & \textbf{dia-words} & $n$ & \textbf{acc.} & \textbf{word acc.} & \textbf{dia-word acc.} \\
+            \hhline{|=|=|=#=|=|=|=|}
+            \textbf{Croatian} & 802,610 & 14.3\% & 1 & 0.977 & 0.857 & 0\\ \cline{4-7}
+            & & & 2 & 0.98 & 0.874 & 0.206\\ \cline{4-7}
+            & & & 3 & 0.985 & 0.903 & 0.491\\ \cline{4-7}
+            & & & 4 & \textbf{0.989} & \textbf{0.929} & \textbf{0.618}\\ \cline{4-7}
+            \hline
+            \textbf{Czech} & 952,909 & 47.8\% & 1 & 0.892 & 0.522 & 0\\ \cline{4-7}
+            & & & 2 & 0.904 & 0.549 & 0.141\\ \cline{4-7}
+            & & & 3 & 0.924 & 0.628 & 0.321\\ \cline{4-7}
+            & & & 4 & \textbf{0.94} & \textbf{0.689} & \textbf{0.433}\\ \cline{4-7}
+            \hline
+            \textbf{Slovak} & 613,727 & 41.1\% & 1 & 0.922 & 0.589 & 0\\ \cline{4-7}
+            & & & 2 & 0.925 & 0.614 & 0.123\\ \cline{4-7}
+            & & & 3 & 0.938 & 0.669 & 0.274\\ \cline{4-7}
+            & & & 4 & \textbf{0.951} & \textbf{0.727} & \textbf{0.42}\\ \cline{4-7}
+            \hline
+            \textbf{Irish} & 50,825 & 29.2\% & 1 & 0.943 & 0.708 & 0\\ \cline{4-7}
+            & & & 2 & 0.948 & 0.736 & 0.214\\ \cline{4-7}
+            & & & 3 & 0.957 & 0.782 & 0.407\\ \cline{4-7}
+            & & & 4 & \textbf{0.962} & \textbf{0.802} & \textbf{0.445}\\ \cline{4-7}
+            \hline
+            \textbf{Hungarian} & 1,294,605 & 47.4\% & 1 & 0.906 & 0.526 & 0\\ \cline{4-7}
+            & & & 2 & 0.906 & 0.52 & 0.0792\\ \cline{4-7}
+            & & & 3 & 0.924 & 0.587 & 0.267\\ \cline{4-7}
+            & & & 4 & \textbf{0.939} & \textbf{0.649} & \textbf{0.38}\\ \cline{4-7}
+            \hline
+            \textbf{Polish} & 1,069,841 & 31.6\% & 1 & 0.946 & 0.684 & 0\\ \cline{4-7}
+            & & & 2 & 0.949 & 0.701 & 0.164\\ \cline{4-7}
+            & & & 3 & 0.961 & 0.762 & 0.353\\ \cline{4-7}
+            & & & 4 & \textbf{0.969} & \textbf{0.809} & \textbf{0.493}\\ \cline{4-7}
+            \hline
+            \textbf{Romanian} & 837,647 & 28.2\% & 1 & 0.95 & 0.723 & 0.0234\\ \cline{4-7}
+            & & & 2 & 0.953 & 0.741 & 0.164\\ \cline{4-7}
+            & & & 3 & 0.958 & 0.768 & 0.31\\ \cline{4-7}
+            & & & 4 & \textbf{0.964} & \textbf{0.797} & \textbf{0.431}\\ \cline{4-7}
+            \hline
+            \textbf{French} & 1,818,618 & 16.6\% & 1 & 0.97 & 0.834 & 0\\ \cline{4-7}
+            & & & 3 & 0.971 & 0.84 & 0.0933\\ \cline{4-7}
+            & & & 4 & \textbf{0.975} & \textbf{0.861} & \textbf{0.274}\\ \cline{4-7}
+            \hline
+            \textbf{Spanish} & 1,735,516 & 11.8\% & 1 & 0.981 & 0.882 & 0\\ \cline{4-7}
+            & & & 3 & 0.982 & 0.893 & 0.218\\ \cline{4-7}
+            & & & 4 & \textbf{0.985} & \textbf{0.909} & \textbf{0.378}\\ \cline{4-7}
+            \hline
+            \textbf{Latvian} & 315,807 & 46.8\% & 1 & 0.915 & 0.532 & 0\\ \cline{4-7}
+            & & & 3 & 0.924 & 0.589 & 0.24\\ \cline{4-7}
+            & & & 4 & \textbf{0.939} & \textbf{0.654} & \textbf{0.38}\\ \cline{4-7}
+            \hline
+        \end{tabular}
+        \caption{Measurements of per-tag (single diacritical mark) and per-word accuracy
+        of an $n$-gram based HMM diacritic restorer.
+        We call dia-word a word that contains at least one diacritical character.
+        The dia-word percentage is listed for testing set.
+        } \label{tab:baba}
+    \end{table}
+
+
     \bibliography{references}
     \bibliographystyle{plain}
 \end{document}
